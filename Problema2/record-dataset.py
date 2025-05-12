@@ -158,9 +158,12 @@ if 'fotos' in os.listdir('./') and 'augmented_images' in os.listdir('./'):
 
     for gesto in ppt:
         for i, foto in enumerate(os.listdir(f'./augmented_images/{gesto}')):
+            # Cargar la imagen en el formato mediapipe
             mp_image = mp.Image.create_from_file(f'./augmented_images/{gesto}/{foto}')
+            # Detectar la mano y sus 21 puntos
             hand_landmarker_result = detector.detect(mp_image)
             try:
+                # Guardar los landmarks en una lista
                 lista_puntos.append([coord for lm in hand_landmarker_result.hand_landmarks[0] for coord in (lm.x, lm.y)])
             except:
                 continue

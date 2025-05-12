@@ -32,6 +32,7 @@ x_temp, x_test, y_temp, y_test = train_test_split(x_data, y_data, test_size=0.2,
 
 x_train, x_val, y_train, y_val = train_test_split(x_temp, y_temp, test_size=0.25, random_state=321, stratify=y_temp)
 
+
 y_train_cat = to_categorical(y_train, num_classes=3)
 y_val_cat = to_categorical(y_val, num_classes=3)
 y_test_cat = to_categorical(y_test, num_classes=3)
