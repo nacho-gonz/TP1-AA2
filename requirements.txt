@@ -1,0 +1,6 @@
+tensorflow==2.13.0
+mediapipe
+pandas
+seaborn
+scikit-learn
+ipykernel -U --force-reinstall
