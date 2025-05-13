@@ -1,6 +1,6 @@
 # Instrucciones.
 
-## Instalacion 
+## Instalación 
 
 - *1* **clonar el repositorio**
 
