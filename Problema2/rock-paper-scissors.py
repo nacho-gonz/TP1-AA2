@@ -50,7 +50,7 @@ clases = ["Piedra", "Papel", "Tijera"]
 
 # Iniciar MediaPipe Task
 base_options = python.BaseOptions(model_asset_path='./model.task')
-options = vision.HandLandmarkerOptions(base_options=base_options, num_hands=1)
+options = vision.HandLandmarkerOptions(base_options=base_options, num_hands=4)
 detector = vision.HandLandmarker.create_from_options(options)
 
 counter = 1
@@ -75,25 +75,29 @@ while True:
     # Crear imagen de MediaPipe
     mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb)
     result = detector.detect(mp_image)
-    prediccion = None
-
+    prediccion = []
+    entradas = []
+    annotated_image = None
     if result.hand_landmarks:
-        landmarks = result.hand_landmarks[0] 
+        for landmarks in result.hand_landmarks:
 
-        entrada = np.array([coord for lm in landmarks for coord in (lm.x, lm.y)])
-        entrada = np.expand_dims(entrada, axis=0) 
+            entrada = np.array([coord for lm in landmarks for coord in (lm.x, lm.y)])
+            entrada = np.expand_dims(entrada, axis=0)
+            entradas.append(entrada) 
+            salida = modelo.predict(entrada, verbose=0)
+            clase_idx = np.argmax(salida)
+            prediccion.append(clases[clase_idx])
 
-        salida = modelo.predict(entrada, verbose=0)
-        clase_idx = np.argmax(salida)
-        prediccion = clases[clase_idx]
-
-        annotated_image = draw_landmarks_on_image(mp_image.numpy_view(), result)
+            annotated_image = draw_landmarks_on_image(mp_image.numpy_view(), result)
 
     # Mostrar resultado
-    if prediccion:
-        cv2.putText(annotated_image, f"Eleccion: {prediccion}", (10, 40),
-                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
-
+            if prediccion:
+                try:
+                    for i,predic in enumerate(prediccion):
+                        cv2.putText(annotated_image, f"{predic}", (int(entradas[i][0][0]*640)-20,int(entradas[i][0][1]*480)),
+                                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+                except:
+                    pass
 
     try:
         cv2.imshow("Piedra, Papel o Tijera", annotated_image)
